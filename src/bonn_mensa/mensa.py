@@ -1,5 +1,6 @@
 import argparse
 from html.parser import HTMLParser
+from typing import List, Optional, Set
 
 import requests
 from colorama import Fore, Style
@@ -26,7 +27,7 @@ ovo_lacto_allergens = set(
     ]
 )
 
-other_allergens: set[str] = set(
+other_allergens: Set[str] = set(
     [
         # "fleischlose Kost (V)",
         # "Vegan (Veg)",
@@ -75,11 +76,11 @@ content_strings = {
 class Meal:
     def __init__(self, title: str) -> None:
         self.title = title
-        self.allergens: list[str] = []
-        self.additives: list[str] = []
-        self.student_price: int | None = None
-        self.staff_price: int | None = None
-        self.guest_price: int | None = None
+        self.allergens: List[str] = []
+        self.additives: List[str] = []
+        self.student_price: Optional[int] = None
+        self.staff_price: Optional[int] = None
+        self.guest_price: Optional[int] = None
 
     def add_allergen(self, allergen: str) -> None:
         self.allergens.append(allergen)
@@ -91,7 +92,7 @@ class Meal:
 class Category:
     def __init__(self, title: str) -> None:
         self.title = title
-        self.meals: list[Meal] = []
+        self.meals: List[Meal] = []
 
     def add_meal(self, meal: Meal) -> None:
         self.meals.append(meal)
@@ -100,12 +101,12 @@ class Category:
 class SimpleMensaResponseParser(HTMLParser):
     def __init__(self, lang: str, verbose: bool = False):
         super().__init__()
-        self.curr_category: Category | None = None
-        self.curr_meal: Meal | None = None
+        self.curr_category: Optional[Category] = None
+        self.curr_meal: Optional[Meal] = None
 
-        self.last_tag: str | None = None
-        self.last_nonignored_tag: str | None = None
-        self.categories: list[Category] = []
+        self.last_tag: Optional[str] = None
+        self.last_nonignored_tag: Optional[str] = None
+        self.categories: List[Category] = []
         self.mode = "INIT"
 
         self.lang = lang
@@ -214,9 +215,9 @@ class SimpleMensaResponseParser(HTMLParser):
 def query_mensa(
     date: str,
     canteen: str,
-    filtered_categories: list[str],
+    filtered_categories: List[str],
     language: str,
-    filter_mode: str | None = None,
+    filter_mode: Optional[str] = None,
     show_all_allergens: bool = False,
     show_additives: bool = False,
     url: str = "https://www.studierendenwerk-bonn.de/index.php?eID=meals",
@@ -367,7 +368,7 @@ def main():
         date = args.date
 
     if args.vegan:
-        filter_mode: str | None = "vegan"
+        filter_mode: Optional[str] = "vegan"
     elif args.vegetarian:
         filter_mode = "vegetarian"
     else:
