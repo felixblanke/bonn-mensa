@@ -279,7 +279,9 @@ def query_mensa(
                 f"{Fore.BLUE}{meal.title} {Fore.CYAN}({meal.student_price/100:.2f}€)",
                 end="",
             )
-            if meal.allergens and (show_all_allergens or set(meal.allergens) & interesting_allergens):
+            if meal.allergens and (
+                show_all_allergens or set(meal.allergens) & interesting_allergens
+            ):
                 if show_all_allergens:
                     allergen_str = ", ".join(meal.allergens)
                 else:
