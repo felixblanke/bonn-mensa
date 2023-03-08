@@ -85,6 +85,10 @@ output_strs = {
         "de": "Preis",
         "en": "Price",
     },
+    "MD_TABLE_COL_SOME_ALLERGENS": {
+        "de": "Allergene (Auswahl)",
+        "en": "Allergens (Selection)",
+    },
     "MD_TABLE_COL_ALLERGENS": {
         "de": "Allergene",
         "en": "Allergens",
@@ -325,7 +329,10 @@ def query_mensa(
         print(f"| {output_strs['MD_TABLE_COL_CAT'][language]}", end="")
         print(f"| {output_strs['MD_TABLE_COL_MEAL'][language]}", end="")
         print(f"| {output_strs['MD_TABLE_COL_PRICE'][language]}", end="")
-        print(f"| {output_strs['MD_TABLE_COL_ALLERGENS'][language]}", end="")
+        if show_all_allergens:
+            print(f"| {output_strs['MD_TABLE_COL_ALLERGENS'][language]}", end="")
+        else:
+            print(f"| {output_strs['MD_TABLE_COL_SOME_ALLERGENS'][language]}", end="")
         if show_additives:
             print(f"| {output_strs['MD_TABLE_COL_ADDITIVES'][language]}", end="")
         print("|")
