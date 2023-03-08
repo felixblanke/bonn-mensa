@@ -331,9 +331,7 @@ def query_mensa(
             print(f"{RESET_COLOR}")
 
 
-def main():
-    colorama_init()
-
+def get_parser():
     parser = argparse.ArgumentParser("mensa")
     filter_group = parser.add_mutually_exclusive_group()
     filter_group.add_argument(
@@ -388,8 +386,10 @@ def main():
         help="Do not use any ANSI colors in the output."
     )
 
-    args = parser.parse_args()
+    return parser
 
+
+def run_cmd(args):
     if args.vegan:
         filter_mode: Optional[str] = "vegan"
     elif args.vegetarian:
@@ -407,6 +407,12 @@ def main():
         show_additives=args.show_additives,
         colors=not args.no_colors
     )
+
+
+def main():
+    colorama_init()
+    args = get_parser().parse_args()
+    run_cmd(args)
 
 
 if __name__ == "__main__":
