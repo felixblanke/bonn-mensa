@@ -307,13 +307,18 @@ def main():
         "--vegetarian", action="store_true", help="Only show vegetarian options"
     )
     parser.add_argument(
-        "--mensa", choices=canteen_id_dict.keys(), type=str, default="CAMPO"
+        "--mensa",
+        choices=canteen_id_dict.keys(),
+        type=str,
+        default="CAMPO",
+        help="The mensa to query. Defaults to CAMPO.",
     )
     parser.add_argument(
         "--filter-categories",
         nargs="*",
+        metavar="CATEGORY",
         default=["Buffet", "Dessert"],
-        help="Categories to hide.",
+        help="Meal categories to hide. Defaults to ['Buffet', 'Dessert'].",
     )
     parser.add_argument(
         "--date",
