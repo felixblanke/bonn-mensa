@@ -313,7 +313,7 @@ def main():
         choices=canteen_id_dict.keys(),
         type=str,
         default="CAMPO",
-        help="The mensa to query. Defaults to CAMPO.",
+        help="The canteen to query. Defaults to CAMPO.",
     )
     parser.add_argument(
         "--filter-categories",
@@ -333,19 +333,19 @@ def main():
         "--lang",
         choices=["de", "en"],
         default="de",
-        help="The language of the meal plan to query",
+        help="The language of the meal plan to query. Defaults to German.",
     )
 
     parser.add_argument(
         "--show-all-allergens",
         action="store_true",
-        help="Show all allergens",
+        help="Show all allergens. By default, only allergens relevant to vegans (e.g. milk or fish) are shown.",
     )
 
     parser.add_argument(
         "--show-additives",
         action="store_true",
-        help="Show additives",
+        help="Show additives.",
     )
 
     args = parser.parse_args()
