@@ -34,8 +34,13 @@ other_allergens = set(
 )
 
 canteen_id_dict = {
+    "SanktAugustin": "1",
     "CAMPO": "2",
     "Hofgarten": "3",
+    "FoodtruckRheinbach": "5",
+    "VenusbergBistro": "6",
+    "CasinoZEF/ZEI": "8",
+    "Foodtruck": "19",
 }
 
 language_id_dict = {
@@ -289,7 +294,7 @@ if __name__ == "__main__":
         "--vegetarian", action="store_true", help="Only show vegetarian options"
     )
     parser.add_argument(
-        "--mensa", choices=["CAMPO", "Hofgarten"], type=str, default="CAMPO"
+        "--mensa", choices=canteen_id_dict.keys(), type=str, default="CAMPO"
     )
     parser.add_argument(
         "--filter-categories",
