@@ -1,18 +1,21 @@
 # Meal plans for university canteens in Bonn
 
 A python script for displaying the meal plans of the canteens of the [Studierendenwerk Bonn](https://www.studierendenwerk-bonn.de/).
-
-This script parses the HTML response of a call to an API.
+The script parses the HTML response of a call to an API.
 Depending on your request the API might take a few seconds to respond.
 
-### Installation
+
+![an example output](images/bonn-mensa_example_output.png)
+
+
+## Installation
 
 To install this script, run
 ```sh
 $ pip install git+https://github.com/felixblanke/bonn-mensa.git
 ```
 
-### Usage
+## Usage
 
 To run the script, simply run `mensa`. For a list of all arguments, see `mensa --help`
 ```
