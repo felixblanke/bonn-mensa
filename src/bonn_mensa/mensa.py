@@ -72,6 +72,29 @@ content_strings = {
     },
 }
 
+output_strs = {
+    "MD_TABLE_COL_CAT": {
+        "de": "Kategorie",
+        "en": "Category",
+    },
+    "MD_TABLE_COL_MEAL": {
+        "de": "Gericht",
+        "en": "Meal",
+    },
+    "MD_TABLE_COL_PRICE": {
+        "de": "Preis",
+        "en": "Price",
+    },
+    "MD_TABLE_COL_ALLERGENS": {
+        "de": "Allergene",
+        "en": "Allergens",
+    },
+    "MD_TABLE_COL_ADDITIVES": {
+        "de": "Zusatzstoffe",
+        "en": "Additives",
+    },
+}
+
 
 class Meal:
     def __init__(self, title: str) -> None:
@@ -223,6 +246,7 @@ def query_mensa(
     url: str = "https://www.studierendenwerk-bonn.de/index.php?eID=meals",
     verbose: bool = False,
     colors: bool = True,
+    markdown_output: bool = False,
 ) -> None:
     if date is None:
         from datetime import datetime
@@ -248,9 +272,12 @@ def query_mensa(
         RESET_COLOR = ""
 
     filter_str = f" [{filter_mode}]" if filter_mode else ""
-    print(
-        f"{QUERY_COLOR}Mensa {canteen} – {date}{filter_str} [{language}]{RESET_COLOR}"
-    )
+    if markdown_output:
+        print(f"### Mensa {canteen} – {date}{filter_str} [{language}]\n")
+    else:
+        print(
+            f"{QUERY_COLOR}Mensa {canteen} – {date}{filter_str} [{language}]{RESET_COLOR}"
+        )
 
     if verbose:
         print(
@@ -281,8 +308,6 @@ def query_mensa(
     if not queried_categories:
         return
 
-    maxlen_catname = max(len(cat.title) for cat in queried_categories)
-
     interesting_allergens = meat_allergens | ovo_lacto_allergens | other_allergens
 
     if filter_mode is None:
@@ -294,6 +319,21 @@ def query_mensa(
     else:
         raise NotImplementedError(filter_mode)
 
+    maxlen_catname = max(len(cat.title) for cat in queried_categories)
+    if markdown_output:
+        print(f"| {output_strs['MD_TABLE_COL_CAT'][language]}", end="")
+        print(f"| {output_strs['MD_TABLE_COL_MEAL'][language]}", end="")
+        print(f"| {output_strs['MD_TABLE_COL_PRICE'][language]}", end="")
+        print(f"| {output_strs['MD_TABLE_COL_ALLERGENS'][language]}", end="")
+        if show_additives:
+            print(f"| {output_strs['MD_TABLE_COL_ADDITIVES'][language]}", end="")
+        print("|")
+        print(f"| :-- | :-- | --: | :-- | ", end="")
+        if show_additives:
+            print(":-- |")
+        else:
+            print()
+
     for cat in queried_categories:
         filtered_meals = [
             meal for meal in cat.meals if not set(meal.allergens) & remove_allergens
@@ -302,33 +342,56 @@ def query_mensa(
         if not filtered_meals:
             continue
 
-        cat_str = cat.title.ljust(maxlen_catname + 1)
-        print(f"{CATEGORY_COLOR}{cat_str}{RESET_COLOR}", end="")
+        if markdown_output:
+            for meal_idx, meal in enumerate(filtered_meals):
+                if meal_idx:
+                    print(f"| |", end="")
+                else:
+                    print(f"| {cat.title} |", end="")
 
-        for meal_idx, meal in enumerate(filtered_meals):
-            # do not indent first line
-            if meal_idx:
-                print(" " * (maxlen_catname + 1), end="")
-            print(
-                f"{MEAL_COLOR}{meal.title} {PRICE_COLOR}({meal.student_price/100:.2f}€)",
-                end="",
-            )
-            if meal.allergens and (
-                show_all_allergens or set(meal.allergens) & interesting_allergens
-            ):
+                print(f" {meal.title} | {meal.student_price/100:.2f}€ |", end="")
+
                 if show_all_allergens:
                     allergen_str = ", ".join(meal.allergens)
                 else:
                     allergen_str = ", ".join(
                         al for al in meal.allergens if al in interesting_allergens
                     )
-                print(f" {ALLERGEN_COLOR}[{allergen_str}]", end="")
+                print(f" {allergen_str} |", end="")
 
-            if show_additives and meal.additives:
-                additives_str = ", ".join(meal.additives)
-                print(f" {ADDITIVE_COLOR}[{additives_str}]", end="")
+                if show_additives:
+                    additives_str = ", ".join(meal.additives)
+                    print(f" {additives_str} |", end="")
 
-            print(f"{RESET_COLOR}")
+                print("")
+        else:
+            cat_str = cat.title.ljust(maxlen_catname + 1)
+            print(f"{CATEGORY_COLOR}{cat_str}{RESET_COLOR}", end="")
+
+            for meal_idx, meal in enumerate(filtered_meals):
+                # do not indent first line
+                if meal_idx:
+                    print(" " * (maxlen_catname + 1), end="")
+                print(
+                    f"{MEAL_COLOR}{meal.title} {PRICE_COLOR}({meal.student_price/100:.2f}€)",
+                    end="",
+                )
+                if meal.allergens and (
+                    show_all_allergens or set(meal.allergens) & interesting_allergens
+                ):
+                    if show_all_allergens:
+                        allergen_str = ", ".join(meal.allergens)
+                    else:
+                        allergen_str = ", ".join(
+                            al for al in meal.allergens if al in interesting_allergens
+                        )
+                    print(f" {ALLERGEN_COLOR}[{allergen_str}]", end="")
+
+                if show_additives and meal.additives:
+                    additives_str = ", ".join(meal.additives)
+                    print(f" {ADDITIVE_COLOR}[{additives_str}]", end="")
+
+                print(f"{RESET_COLOR}")
 
 
 def get_parser():
@@ -383,7 +446,13 @@ def get_parser():
     parser.add_argument(
         "--no-colors",
         action="store_true",
-        help="Do not use any ANSI colors in the output."
+        help="Do not use any ANSI colors in the output.",
+    )
+
+    parser.add_argument(
+        "--markdown",
+        action="store_true",
+        help="Output in markdown table format.",
     )
 
     return parser
@@ -405,7 +474,8 @@ def run_cmd(args):
         filter_mode=filter_mode,
         show_all_allergens=args.show_all_allergens,
         show_additives=args.show_additives,
-        colors=not args.no_colors
+        colors=not args.no_colors,
+        markdown_output=args.markdown,
     )
 
 
