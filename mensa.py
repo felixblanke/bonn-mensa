@@ -310,7 +310,6 @@ if __name__ == "__main__":
         help="The date to query for. Defaults to today.",
     )
 
-    lang_group = parser.add_mutually_exclusive_group()
     parser.add_argument(
         "--lang",
         choices=["de", "en"],
