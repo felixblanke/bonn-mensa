@@ -222,14 +222,34 @@ def query_mensa(
     show_additives: bool = False,
     url: str = "https://www.studierendenwerk-bonn.de/index.php?eID=meals",
     verbose: bool = False,
+    colors: bool = True,
 ) -> None:
     if date is None:
         from datetime import datetime
         date = datetime.today().strftime("%Y-%m-%d")
 
+    if colors:
+        QUERY_COLOR = Fore.MAGENTA
+        CATEGORY_COLOR = Fore.GREEN
+        MEAL_COLOR = Fore.BLUE
+        PRICE_COLOR = Fore.CYAN
+        ALLERGEN_COLOR = Fore.RED
+        ADDITIVE_COLOR = Fore.YELLOW
+        WARN_COLOR = Fore.RED
+        RESET_COLOR = Style.RESET_ALL
+    else:
+        QUERY_COLOR = ""
+        CATEGORY_COLOR = ""
+        MEAL_COLOR = ""
+        PRICE_COLOR = ""
+        ALLERGEN_COLOR = ""
+        ADDITIVE_COLOR = ""
+        WARN_COLOR = ""
+        RESET_COLOR = ""
+
     filter_str = f" [{filter_mode}]" if filter_mode else ""
     print(
-        f"{Fore.MAGENTA}Mensa {canteen} – {date}{filter_str} [{language}]{Style.RESET_ALL}"
+        f"{QUERY_COLOR}Mensa {canteen} – {date}{filter_str} [{language}]{RESET_COLOR}"
     )
 
     if verbose:
@@ -251,7 +271,7 @@ def query_mensa(
 
     if not parser.categories:
         print(
-            f"{Fore.RED}Query failed. Please check https://www.studierendenwerk-bonn.de if the mensa is open today.{Style.RESET_ALL}"
+            f"{WARN_COLOR}Query failed. Please check https://www.studierendenwerk-bonn.de if the mensa is open today.{RESET_COLOR}"
         )
         return
 
@@ -283,14 +303,14 @@ def query_mensa(
             continue
 
         cat_str = cat.title.ljust(maxlen_catname + 1)
-        print(f"{Fore.GREEN}{cat_str}{Style.RESET_ALL}", end="")
+        print(f"{CATEGORY_COLOR}{cat_str}{RESET_COLOR}", end="")
 
         for meal_idx, meal in enumerate(filtered_meals):
             # do not indent first line
             if meal_idx:
                 print(" " * (maxlen_catname + 1), end="")
             print(
-                f"{Fore.BLUE}{meal.title} {Fore.CYAN}({meal.student_price/100:.2f}€)",
+                f"{MEAL_COLOR}{meal.title} {PRICE_COLOR}({meal.student_price/100:.2f}€)",
                 end="",
             )
             if meal.allergens and (
@@ -302,13 +322,13 @@ def query_mensa(
                     allergen_str = ", ".join(
                         al for al in meal.allergens if al in interesting_allergens
                     )
-                print(f" {Fore.RED}[{allergen_str}]", end="")
+                print(f" {ALLERGEN_COLOR}[{allergen_str}]", end="")
 
             if show_additives and meal.additives:
                 additives_str = ", ".join(meal.additives)
-                print(f" {Fore.YELLOW}[{additives_str}]", end="")
+                print(f" {ADDITIVE_COLOR}[{additives_str}]", end="")
 
-            print(f"{Style.RESET_ALL}")
+            print(f"{RESET_COLOR}")
 
 
 def main():
@@ -362,6 +382,12 @@ def main():
         help="Show additives.",
     )
 
+    parser.add_argument(
+        "--no-colors",
+        action="store_true",
+        help="Do not use any ANSI colors in the output."
+    )
+
     args = parser.parse_args()
 
     if args.vegan:
@@ -379,6 +405,7 @@ def main():
         filter_mode=filter_mode,
         show_all_allergens=args.show_all_allergens,
         show_additives=args.show_additives,
+        colors=not args.no_colors
     )
 
 
