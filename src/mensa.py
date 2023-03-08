@@ -253,6 +253,9 @@ def query_mensa(
     queried_categories = [
         cat for cat in parser.categories if cat.title not in filtered_categories
     ]
+    if not queried_categories:
+        return
+
     maxlen_catname = max(len(cat.title) for cat in queried_categories)
 
     interesting_allergens = meat_allergens | ovo_lacto_allergens | other_allergens
