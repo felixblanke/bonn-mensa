@@ -224,7 +224,7 @@ def query_mensa(
 ) -> None:
     filter_str = f" [{filter_mode}]" if filter_mode else ""
     print(
-        f"{Fore.YELLOW}Mensa {canteen} – {date}{filter_str} [{language}]{Style.RESET_ALL}"
+        f"{Fore.MAGENTA}Mensa {canteen} – {date}{filter_str} [{language}]{Style.RESET_ALL}"
     )
 
     if verbose:
@@ -290,7 +290,7 @@ def query_mensa(
 
             if show_additives:
                 additives_str = ", ".join(meal.additives)
-                print(f" {Fore.MAGENTA}[{additives_str}]", end="")
+                print(f" {Fore.YELLOW}[{additives_str}]", end="")
 
             print(f"{Style.RESET_ALL}")
 
