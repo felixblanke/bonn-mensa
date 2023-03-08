@@ -26,7 +26,7 @@ ovo_lacto_allergens = set(
     ]
 )
 
-other_allergens = set(
+other_allergens: set[str] = set(
     [
         # "fleischlose Kost (V)",
         # "Vegan (Veg)",
@@ -89,9 +89,9 @@ class Meal:
 
 
 class Category:
-    def __init__(self, title) -> None:
+    def __init__(self, title: str) -> None:
         self.title = title
-        self.meals = []
+        self.meals: list[Meal] = []
 
     def add_meal(self, meal: Meal) -> None:
         self.meals.append(meal)
@@ -105,7 +105,7 @@ class SimpleMensaResponseParser(HTMLParser):
 
         self.last_tag: str | None = None
         self.last_nonignored_tag: str | None = None
-        self.categories = []
+        self.categories: list[Category] = []
         self.mode = "INIT"
 
         self.lang = lang
@@ -327,7 +327,7 @@ if __name__ == "__main__":
         date = args.date
 
     if args.vegan:
-        filter_mode = "vegan"
+        filter_mode: str | None = "vegan"
     elif args.vegetarian:
         filter_mode = "vegetarian"
     else:
