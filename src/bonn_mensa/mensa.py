@@ -250,6 +250,7 @@ def query_mensa(
 ) -> None:
     if date is None:
         from datetime import datetime
+
         date = datetime.today().strftime("%Y-%m-%d")
 
     if colors:
