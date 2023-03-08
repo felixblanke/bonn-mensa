@@ -1,9 +1,9 @@
 import argparse
-from colorama import init as colorama_init
-from colorama import Fore
-from colorama import Style
 from html.parser import HTMLParser
+
 import requests
+from colorama import Fore, Style
+from colorama import init as colorama_init
 
 meat_allergens = set(
     [
@@ -278,14 +278,16 @@ def main(
                 end="",
             )
             if set(meal.allergens) & interesting_allergens:
-                print(
-                    f" {Fore.RED}[{', '.join(al for al in meal.allergens if al in interesting_allergens)}]",
-                    end="",
+                allergen_str = ", ".join(
+                    al for al in meal.allergens if al in interesting_allergens
                 )
+                print(f" {Fore.RED}[{allergen_str}]", end="")
             print(f"{Style.RESET_ALL}")
 
 
 if __name__ == "__main__":
+    colorama_init()
+
     parser = argparse.ArgumentParser("mensa")
     filter_group = parser.add_mutually_exclusive_group()
     filter_group.add_argument(
