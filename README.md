@@ -23,9 +23,9 @@ $ mensa --help
 usage: mensa [-h] [--vegan | --vegetarian]
              [--mensa {SanktAugustin,CAMPO,Hofgarten,FoodtruckRheinbach,VenusbergBistro,CasinoZEF/ZEI,Foodtruck}]
              [--filter-categories [CATEGORY ...]] [--date DATE] [--lang {de,en}] [--show-all-allergens]
-             [--show-additives]
+             [--show-additives] [--no-colors] [--markdown]
 
-options:
+optional arguments:
   -h, --help            show this help message and exit
   --vegan               Only show vegan options
   --vegetarian          Only show vegetarian options
@@ -37,4 +37,6 @@ options:
   --lang {de,en}        The language of the meal plan to query. Defaults to German.
   --show-all-allergens  Show all allergens. By default, only allergens relevant to vegans (e.g. milk or fish) are shown.
   --show-additives      Show additives.
+  --no-colors           Do not use any ANSI colors in the output.
+  --markdown            Output in markdown table format.
 ```
