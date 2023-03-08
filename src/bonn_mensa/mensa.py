@@ -213,7 +213,7 @@ class SimpleMensaResponseParser(HTMLParser):
 
 
 def query_mensa(
-    date: str,
+    date: Optional[str],
     canteen: str,
     filtered_categories: List[str],
     language: str,
@@ -223,6 +223,10 @@ def query_mensa(
     url: str = "https://www.studierendenwerk-bonn.de/index.php?eID=meals",
     verbose: bool = False,
 ) -> None:
+    if date is None:
+        from datetime import datetime
+        date = datetime.today().strftime("%Y-%m-%d")
+
     filter_str = f" [{filter_mode}]" if filter_mode else ""
     print(
         f"{Fore.MAGENTA}Mensa {canteen} – {date}{filter_str} [{language}]{Style.RESET_ALL}"
@@ -360,13 +364,6 @@ def main():
 
     args = parser.parse_args()
 
-    if args.date is None:
-        from datetime import datetime
-
-        date = datetime.today().strftime("%Y-%m-%d")
-    else:
-        date = args.date
-
     if args.vegan:
         filter_mode: Optional[str] = "vegan"
     elif args.vegetarian:
@@ -375,7 +372,7 @@ def main():
         filter_mode = None
 
     query_mensa(
-        date=date,
+        date=args.date,
         canteen=args.mensa,
         language=args.lang,
         filtered_categories=args.filter_categories,
