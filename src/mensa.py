@@ -244,6 +244,12 @@ def query_mensa(
     parser.feed(r.text)
     parser.close()
 
+    if not parser.categories:
+        print(
+            f"{Fore.RED}Query failed. Please check https://www.studierendenwerk-bonn.de if the mensa is open today.{Style.RESET_ALL}"
+        )
+        return
+
     queried_categories = [
         cat for cat in parser.categories if cat.title not in filtered_categories
     ]
