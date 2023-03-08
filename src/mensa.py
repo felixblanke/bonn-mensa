@@ -324,7 +324,7 @@ def main():
         "--date",
         type=str,
         default=None,
-        help="The date to query for. Defaults to today.",
+        help="The date to query for in YYYY-MM-DD format. Defaults to today.",
     )
 
     parser.add_argument(
