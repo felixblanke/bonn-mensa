@@ -217,6 +217,8 @@ def query_mensa(
     filtered_categories: list[str],
     language: str,
     filter_mode: str | None = None,
+    show_all_allergens: bool = False,
+    show_additives: bool = False,
     url: str = "https://www.studierendenwerk-bonn.de/index.php?eID=meals",
     verbose: bool = False,
 ) -> None:
@@ -277,11 +279,19 @@ def query_mensa(
                 f"{Fore.BLUE}{meal.title} {Fore.CYAN}({meal.student_price/100:.2f}€)",
                 end="",
             )
-            if set(meal.allergens) & interesting_allergens:
-                allergen_str = ", ".join(
-                    al for al in meal.allergens if al in interesting_allergens
-                )
+            if show_all_allergens or set(meal.allergens) & interesting_allergens:
+                if show_all_allergens:
+                    allergen_str = ", ".join(meal.allergens)
+                else:
+                    allergen_str = ", ".join(
+                        al for al in meal.allergens if al in interesting_allergens
+                    )
                 print(f" {Fore.RED}[{allergen_str}]", end="")
+
+            if show_additives:
+                additives_str = ", ".join(meal.additives)
+                print(f" {Fore.MAGENTA}[{additives_str}]", end="")
+
             print(f"{Style.RESET_ALL}")
 
 
@@ -319,6 +329,18 @@ def main():
         help="The language of the meal plan to query",
     )
 
+    parser.add_argument(
+        "--show-all-allergens",
+        action="store_true",
+        help="Show all allergens",
+    )
+
+    parser.add_argument(
+        "--show-additives",
+        action="store_true",
+        help="Show additives",
+    )
+
     args = parser.parse_args()
 
     if args.date is None:
@@ -341,6 +363,8 @@ def main():
         language=args.lang,
         filtered_categories=args.filter_categories,
         filter_mode=filter_mode,
+        show_all_allergens=args.show_all_allergens,
+        show_additives=args.show_additives,
     )
 
 
