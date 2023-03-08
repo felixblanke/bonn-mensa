@@ -133,7 +133,7 @@ class SimpleMensaResponseParser(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         # skip non-empty attributes
-        if attrs or tag not in ["h2", "h5", "strong", "p", "th", "td"]:
+        if attrs or tag not in ["h2", "h5", "strong", "p", "th", "td", "br"]:
             self.mode = "IGNORE"
             return
 
@@ -145,8 +145,8 @@ class SimpleMensaResponseParser(HTMLParser):
         elif tag == "strong":
             self.mode = "NEW_INFOS"
         elif tag == "p":
-            assert self.curr_meal
-            assert self.curr_category
+            if not self.curr_meal and not self.curr_category:
+                self.mode = "INFO"
         elif tag == "th":
             self.mode = "NEW_PRICE_CAT"
         elif tag == "td":
@@ -156,11 +156,12 @@ class SimpleMensaResponseParser(HTMLParser):
         return int("".join(digit for digit in price if digit.isdigit()))
 
     def handle_data(self, data):
-        if self.mode == "IGNORE":
+        if self.mode == "IGNORE" or not data.strip():
+            return
+        if self.mode in ["INIT", "INFO"]:
+            print(data)
             return
         data = data.strip()
-        if not data:
-            return
         if self.mode == "NEW_CAT":
             self.curr_category = Category(data)
             if self.verbose:
