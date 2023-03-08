@@ -211,7 +211,7 @@ class SimpleMensaResponseParser(HTMLParser):
         self.start_new_category()
 
 
-def main(
+def query_mensa(
     date: str,
     canteen: str,
     filtered_categories: list[str],
@@ -285,7 +285,7 @@ def main(
             print(f"{Style.RESET_ALL}")
 
 
-if __name__ == "__main__":
+def main():
     colorama_init()
 
     parser = argparse.ArgumentParser("mensa")
@@ -335,10 +335,14 @@ if __name__ == "__main__":
     else:
         filter_mode = None
 
-    main(
+    query_mensa(
         date=date,
         canteen=args.mensa,
         language=args.lang,
         filtered_categories=args.filter_categories,
         filter_mode=filter_mode,
     )
+
+
+if __name__ == "__main__":
+    main()
