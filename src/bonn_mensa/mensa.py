@@ -1,38 +1,60 @@
 import argparse
 from html.parser import HTMLParser
-from typing import List, Optional, Set
+from typing import Dict, List, Optional, Set
 
 import requests
 from colorama import Fore, Style
 from colorama import init as colorama_init
 
-meat_allergens = set(
-    [
-        "Krebstiere (41)",
-        "Fisch (43)",
-        "Weichtiere (53)",
-        "Kalbfleisch (K)",
-        "Schweinefleisch (S)",
-        "Rindfleisch (R)",
-        "Lammfleisch (L)",
-        "Geflügel (G)",
-        "Fisch (F)",
-    ]
-)
+meat_allergens: Dict[str, Set[str]] = {
+    "de": set(
+        [
+            "Krebstiere (41)",
+            "Fisch (43)",
+            "Weichtiere (53)",
+            "Kalbfleisch (K)",
+            "Schweinefleisch (S)",
+            "Rindfleisch (R)",
+            "Lammfleisch (L)",
+            "Geflügel (G)",
+            "Fisch (F)",
+        ]
+    ),
+    "en": set(
+        [
+            "crustaceans (41)",
+            "fish (43)",
+            "mollusks (53)",
+            "veal (K)",
+            "pork (S)",
+            "beef (R)",
+            "lamb (L)",
+            "poultry (G)",
+            "fish (F)",
+        ]
+    ),
 
-ovo_lacto_allergens = set(
-    [
-        "Eier (42)",
-        "Milch (46)",
-    ]
-)
+}
 
-other_allergens: Set[str] = set(
-    [
-        # "fleischlose Kost (V)",
-        # "Vegan (Veg)",
-    ]
-)
+ovo_lacto_allergens = {
+    "de": set(
+        [
+            "Eier (42)",
+            "Milch (46)",
+        ]
+    ),
+    "en": set(
+        [
+            "eggs (42)",
+            "milk (46)"
+        ]
+    )
+}
+
+other_allergens: Dict[str, Set[str]] = {
+    "de": set(),
+    "en": set(),
+}
 
 canteen_id_dict = {
     "SanktAugustin": "1",
@@ -313,14 +335,14 @@ def query_mensa(
     if not queried_categories:
         return
 
-    interesting_allergens = meat_allergens | ovo_lacto_allergens | other_allergens
+    interesting_allergens = meat_allergens[language] | ovo_lacto_allergens[language] | other_allergens[language]
 
     if filter_mode is None:
         remove_allergens = set()
     elif filter_mode == "vegetarian":
-        remove_allergens = meat_allergens
+        remove_allergens = meat_allergens[language]
     elif filter_mode == "vegan":
-        remove_allergens = meat_allergens | ovo_lacto_allergens
+        remove_allergens = meat_allergens[language] | ovo_lacto_allergens[language]
     else:
         raise NotImplementedError(filter_mode)
 
