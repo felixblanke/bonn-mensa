@@ -269,7 +269,7 @@ def query_mensa(
     filter_mode: Optional[str] = None,
     show_all_allergens: bool = False,
     show_additives: bool = False,
-    url: str = "https://www.studierendenwerk-bonn.de/index.php?eID=meals",
+    url: str = "https://www.studierendenwerk-bonn.de/index.php?ajax=meals",
     verbose: bool = False,
     colors: bool = True,
     markdown_output: bool = False,
