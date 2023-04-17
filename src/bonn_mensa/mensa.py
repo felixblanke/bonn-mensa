@@ -328,6 +328,7 @@ def query_mensa(
             f"{WARN_COLOR}Query failed. Please check https://www.studierendenwerk-bonn.de if the mensa is open today.{RESET_COLOR}"
         )
         return
+    print()
 
     queried_categories = [
         cat for cat in parser.categories if cat.title not in filtered_categories
